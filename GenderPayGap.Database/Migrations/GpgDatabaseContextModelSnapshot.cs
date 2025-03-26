@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
+#nullable disable
+
 namespace GenderPayGap.Database.Migrations
 {
     [DbContext(typeof(GpgDatabaseContext))]
@@ -15,9 +17,13 @@ namespace GenderPayGap.Database.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "3.1.6")
+                .HasAnnotation("ProductVersion", "8.0.11")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("GenderPayGap.Database.InactiveUserOrganisation", b =>
                 {
@@ -38,8 +44,8 @@ namespace GenderPayGap.Database.Migrations
 
                     b.Property<int>("Method")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("MethodId")
                         .HasColumnType("integer")
+                        .HasColumnName("MethodId")
                         .HasDefaultValueSql("((0))");
 
                     b.Property<string>("PIN")
@@ -68,8 +74,9 @@ namespace GenderPayGap.Database.Migrations
                 {
                     b.Property<long>("AuditLogId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("AuditLogId"));
 
                     b.Property<int>("Action")
                         .HasColumnType("integer");
@@ -99,15 +106,16 @@ namespace GenderPayGap.Database.Migrations
 
                     b.HasIndex("OriginalUserId");
 
-                    b.ToTable("AuditLogs");
+                    b.ToTable("AuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.Models.DataProtectionKey", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("FriendlyName")
                         .HasColumnType("text");
@@ -124,8 +132,9 @@ namespace GenderPayGap.Database.Migrations
                 {
                     b.Property<long>("DraftReturnId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("DraftReturnId"));
 
                     b.Property<string>("CompanyLinkToGPGInfo")
                         .HasColumnType("text");
@@ -205,8 +214,9 @@ namespace GenderPayGap.Database.Migrations
                 {
                     b.Property<long>("FeedbackId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("FeedbackId"));
 
                     b.Property<bool?>("ActionsToCloseGpg")
                         .HasColumnType("boolean");
@@ -226,8 +236,8 @@ namespace GenderPayGap.Database.Migrations
                         .HasDefaultValueSql("now()");
 
                     b.Property<string>("Details")
-                        .HasColumnType("character varying(2000)")
-                        .HasMaxLength(2000);
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
 
                     b.Property<int?>("Difficulty")
                         .HasColumnType("integer");
@@ -266,22 +276,22 @@ namespace GenderPayGap.Database.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("OtherPersonText")
-                        .HasColumnType("character varying(2000)")
-                        .HasMaxLength(2000);
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
 
                     b.Property<bool?>("OtherReason")
                         .HasColumnType("boolean");
 
                     b.Property<string>("OtherReasonText")
-                        .HasColumnType("character varying(2000)")
-                        .HasMaxLength(2000);
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
 
                     b.Property<bool?>("OtherSource")
                         .HasColumnType("boolean");
 
                     b.Property<string>("OtherSourceText")
-                        .HasColumnType("character varying(2000)")
-                        .HasMaxLength(2000);
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
 
                     b.Property<bool?>("PersonInterestedInGeneralGpg")
                         .HasColumnType("boolean");
@@ -309,15 +319,16 @@ namespace GenderPayGap.Database.Migrations
 
                     b.HasKey("FeedbackId");
 
-                    b.ToTable("Feedback");
+                    b.ToTable("Feedback", (string)null);
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.Models.ReminderEmail", b =>
                 {
                     b.Property<long>("ReminderEmailId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ReminderEmailId"));
 
                     b.Property<DateTime>("DateChecked")
                         .HasColumnType("timestamp without time zone");
@@ -341,19 +352,20 @@ namespace GenderPayGap.Database.Migrations
 
                     b.HasIndex("UserId", "SectorType", "ReminderDate");
 
-                    b.ToTable("ReminderEmails");
+                    b.ToTable("ReminderEmails", (string)null);
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.Organisation", b =>
                 {
                     b.Property<long>("OrganisationId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("OrganisationId"));
 
                     b.Property<string>("CompanyNumber")
-                        .HasColumnType("character varying(10)")
-                        .HasMaxLength(10);
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp without time zone");
@@ -369,23 +381,23 @@ namespace GenderPayGap.Database.Migrations
 
                     b.Property<string>("OrganisationName")
                         .IsRequired()
-                        .HasColumnType("character varying(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("SectorType")
-                        .HasColumnName("SectorTypeId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("SectorTypeId");
 
                     b.Property<byte>("Status")
-                        .HasColumnName("StatusId")
-                        .HasColumnType("smallint");
+                        .HasColumnType("smallint")
+                        .HasColumnName("StatusId");
 
                     b.Property<DateTime>("StatusDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("StatusDetails")
-                        .HasColumnType("character varying(255)")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("OrganisationId")
                         .HasName("PK_dbo.Organisations");
@@ -401,35 +413,36 @@ namespace GenderPayGap.Database.Migrations
 
                     b.HasIndex("Status");
 
-                    b.ToTable("Organisations");
+                    b.ToTable("Organisations", (string)null);
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.OrganisationAddress", b =>
                 {
                     b.Property<long>("AddressId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("AddressId"));
 
                     b.Property<string>("Address1")
-                        .HasColumnType("character varying(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Address2")
-                        .HasColumnType("character varying(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Address3")
-                        .HasColumnType("character varying(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Country")
-                        .HasColumnType("character varying(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("County")
-                        .HasColumnType("character varying(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp without time zone");
@@ -441,31 +454,31 @@ namespace GenderPayGap.Database.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("PoBox")
-                        .HasColumnType("character varying(30)")
-                        .HasMaxLength(30);
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
 
                     b.Property<string>("PostCode")
-                        .HasColumnType("character varying(20)")
-                        .HasMaxLength(20);
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("Source")
-                        .HasColumnType("character varying(255)")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<byte>("Status")
-                        .HasColumnName("StatusId")
-                        .HasColumnType("smallint");
+                        .HasColumnType("smallint")
+                        .HasColumnName("StatusId");
 
                     b.Property<DateTime>("StatusDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("StatusDetails")
-                        .HasColumnType("character varying(255)")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("TownCity")
-                        .HasColumnType("character varying(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("AddressId")
                         .HasName("PK_dbo.OrganisationAddresses");
@@ -476,30 +489,31 @@ namespace GenderPayGap.Database.Migrations
 
                     b.HasIndex("StatusDate");
 
-                    b.ToTable("OrganisationAddresses");
+                    b.ToTable("OrganisationAddresses", (string)null);
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.OrganisationName", b =>
                 {
                     b.Property<long>("OrganisationNameId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("OrganisationNameId"));
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("character varying(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<long>("OrganisationId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Source")
-                        .HasColumnType("character varying(255)")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("OrganisationNameId")
                         .HasName("PK_dbo.OrganisationNames");
@@ -510,15 +524,16 @@ namespace GenderPayGap.Database.Migrations
 
                     b.HasIndex("OrganisationId");
 
-                    b.ToTable("OrganisationNames");
+                    b.ToTable("OrganisationNames", (string)null);
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.OrganisationPublicSectorType", b =>
                 {
                     b.Property<long>("OrganisationPublicSectorTypeId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("OrganisationPublicSectorTypeId"));
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp without time zone");
@@ -530,8 +545,8 @@ namespace GenderPayGap.Database.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Source")
-                        .HasColumnType("character varying(255)")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("OrganisationPublicSectorTypeId")
                         .HasName("PK_dbo.OrganisationPublicSectorTypes");
@@ -542,15 +557,16 @@ namespace GenderPayGap.Database.Migrations
 
                     b.HasIndex("PublicSectorTypeId");
 
-                    b.ToTable("OrganisationPublicSectorTypes");
+                    b.ToTable("OrganisationPublicSectorTypes", (string)null);
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.OrganisationScope", b =>
                 {
                     b.Property<long>("OrganisationScopeId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("OrganisationScopeId"));
 
                     b.Property<long>("OrganisationId")
                         .HasColumnType("bigint");
@@ -559,12 +575,12 @@ namespace GenderPayGap.Database.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Reason")
-                        .HasColumnType("character varying(1000)")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<int>("ScopeStatus")
-                        .HasColumnName("ScopeStatusId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("ScopeStatusId");
 
                     b.Property<DateTime>("ScopeStatusDate")
                         .HasColumnType("timestamp without time zone");
@@ -576,13 +592,13 @@ namespace GenderPayGap.Database.Migrations
 
                     b.Property<byte>("Status")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("StatusId")
                         .HasColumnType("smallint")
+                        .HasColumnName("StatusId")
                         .HasDefaultValueSql("((0))");
 
                     b.Property<string>("StatusDetails")
-                        .HasColumnType("character varying(255)")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("OrganisationScopeId")
                         .HasName("PK_dbo.OrganisationScopes");
@@ -597,15 +613,16 @@ namespace GenderPayGap.Database.Migrations
 
                     b.HasIndex("Status");
 
-                    b.ToTable("OrganisationScopes");
+                    b.ToTable("OrganisationScopes", (string)null);
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.OrganisationSicCode", b =>
                 {
                     b.Property<long>("OrganisationSicCodeId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("OrganisationSicCodeId"));
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp without time zone");
@@ -620,8 +637,8 @@ namespace GenderPayGap.Database.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Source")
-                        .HasColumnType("character varying(255)")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("OrganisationSicCodeId")
                         .HasName("PK_dbo.OrganisationSicCodes");
@@ -634,15 +651,16 @@ namespace GenderPayGap.Database.Migrations
 
                     b.HasIndex("SicCodeId");
 
-                    b.ToTable("OrganisationSicCodes");
+                    b.ToTable("OrganisationSicCodes", (string)null);
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.OrganisationStatus", b =>
                 {
                     b.Property<long>("OrganisationStatusId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("OrganisationStatusId"));
 
                     b.Property<long?>("ByUserId")
                         .HasColumnType("bigint");
@@ -651,15 +669,15 @@ namespace GenderPayGap.Database.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<byte>("Status")
-                        .HasColumnName("StatusId")
-                        .HasColumnType("smallint");
+                        .HasColumnType("smallint")
+                        .HasColumnName("StatusId");
 
                     b.Property<DateTime>("StatusDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("StatusDetails")
-                        .HasColumnType("character varying(255)")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("OrganisationStatusId")
                         .HasName("PK_dbo.OrganisationStatus");
@@ -677,33 +695,35 @@ namespace GenderPayGap.Database.Migrations
                 {
                     b.Property<int>("PublicSectorTypeId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PublicSectorTypeId"));
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("character varying(250)")
-                        .HasMaxLength(250);
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
 
                     b.HasKey("PublicSectorTypeId")
                         .HasName("PK_dbo.PublicSectorTypes");
 
-                    b.ToTable("PublicSectorTypes");
+                    b.ToTable("PublicSectorTypes", (string)null);
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.Return", b =>
                 {
                     b.Property<long>("ReturnId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ReturnId"));
 
                     b.Property<DateTime>("AccountingDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("CompanyLinkToGPGInfo")
-                        .HasColumnType("character varying(255)")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<decimal?>("DiffMeanBonusPercent")
                         .HasColumnType("numeric");
@@ -719,8 +739,8 @@ namespace GenderPayGap.Database.Migrations
 
                     b.Property<bool>("EHRCResponse")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("EHRCResponse")
                         .HasColumnType("boolean")
+                        .HasColumnName("EHRCResponse")
                         .HasDefaultValueSql("false");
 
                     b.Property<decimal?>("FemaleLowerPayBand")
@@ -739,23 +759,23 @@ namespace GenderPayGap.Database.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("character varying(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<bool>("IsLateSubmission")
                         .HasColumnType("boolean");
 
                     b.Property<string>("JobTitle")
-                        .HasColumnType("character varying(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("character varying(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("LateReason")
-                        .HasColumnType("character varying(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<decimal?>("MaleLowerPayBand")
                         .HasColumnType("numeric");
@@ -783,8 +803,8 @@ namespace GenderPayGap.Database.Migrations
                         .HasDefaultValueSql("((0))");
 
                     b.Property<string>("Modifications")
-                        .HasColumnType("character varying(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<DateTime>("Modified")
                         .HasColumnType("timestamp without time zone");
@@ -796,15 +816,15 @@ namespace GenderPayGap.Database.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<byte>("Status")
-                        .HasColumnName("StatusId")
-                        .HasColumnType("smallint");
+                        .HasColumnType("smallint")
+                        .HasColumnName("StatusId");
 
                     b.Property<DateTime>("StatusDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("StatusDetails")
-                        .HasColumnType("character varying(255)")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("ReturnId")
                         .HasName("PK_dbo.Returns");
@@ -815,7 +835,7 @@ namespace GenderPayGap.Database.Migrations
 
                     b.HasIndex("Status");
 
-                    b.ToTable("Returns");
+                    b.ToTable("Returns", (string)null);
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.SicCode", b =>
@@ -825,13 +845,13 @@ namespace GenderPayGap.Database.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("character varying(250)")
-                        .HasMaxLength(250);
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
 
                     b.Property<string>("SicSectionId")
                         .IsRequired()
-                        .HasColumnType("character varying(1)")
-                        .HasMaxLength(1);
+                        .HasMaxLength(1)
+                        .HasColumnType("character varying(1)");
 
                     b.Property<string>("Synonyms")
                         .HasColumnType("text");
@@ -847,13 +867,13 @@ namespace GenderPayGap.Database.Migrations
             modelBuilder.Entity("GenderPayGap.Database.SicSection", b =>
                 {
                     b.Property<string>("SicSectionId")
-                        .HasColumnType("character varying(1)")
-                        .HasMaxLength(1);
+                        .HasMaxLength(1)
+                        .HasColumnType("character varying(1)");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("character varying(250)")
-                        .HasMaxLength(250);
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
 
                     b.HasKey("SicSectionId")
                         .HasName("PK_dbo.SicSections");
@@ -865,8 +885,9 @@ namespace GenderPayGap.Database.Migrations
                 {
                     b.Property<long>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("UserId"));
 
                     b.Property<DateTime?>("AcceptedPrivacyStatement")
                         .HasColumnType("timestamp without time zone");
@@ -875,32 +896,32 @@ namespace GenderPayGap.Database.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("ContactPhoneNumber")
-                        .HasColumnType("character varying(20)")
-                        .HasMaxLength(20);
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("EmailAddressDB")
                         .IsRequired()
-                        .HasColumnName("EmailAddress")
+                        .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
-                        .HasMaxLength(255);
+                        .HasColumnName("EmailAddress");
 
                     b.Property<DateTime?>("EmailVerifiedDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("EmailVerifyHash")
-                        .HasColumnType("character varying(250)")
-                        .HasMaxLength(250);
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
 
                     b.Property<DateTime?>("EmailVerifySendDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Firstname")
                         .IsRequired()
-                        .HasColumnType("character varying(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<bool>("HasBeenAnonymised")
                         .HasColumnType("boolean");
@@ -910,13 +931,13 @@ namespace GenderPayGap.Database.Migrations
 
                     b.Property<string>("JobTitle")
                         .IsRequired()
-                        .HasColumnType("character varying(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Lastname")
                         .IsRequired()
-                        .HasColumnType("character varying(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("LoginAttempts")
                         .HasColumnType("integer");
@@ -935,8 +956,8 @@ namespace GenderPayGap.Database.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("character varying(250)")
-                        .HasMaxLength(250);
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
 
                     b.Property<string>("PasswordResetCode")
                         .HasColumnType("text");
@@ -954,15 +975,15 @@ namespace GenderPayGap.Database.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<byte>("Status")
-                        .HasColumnName("StatusId")
-                        .HasColumnType("smallint");
+                        .HasColumnType("smallint")
+                        .HasColumnName("StatusId");
 
                     b.Property<DateTime>("StatusDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("StatusDetails")
-                        .HasColumnType("character varying(255)")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int>("UserRole")
                         .HasColumnType("integer");
@@ -978,11 +999,12 @@ namespace GenderPayGap.Database.Migrations
 
                     b.HasIndex("ContactPhoneNumber");
 
-                    b.HasIndex("EmailAddressDB");
+                    b.HasIndex("EmailAddressDB")
+                        .IsUnique();
 
                     b.HasIndex("Status");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.UserOrganisation", b =>
@@ -1004,8 +1026,8 @@ namespace GenderPayGap.Database.Migrations
 
                     b.Property<int>("Method")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("MethodId")
                         .HasColumnType("integer")
+                        .HasColumnName("MethodId")
                         .HasDefaultValueSql("((0))");
 
                     b.Property<string>("PIN")
@@ -1034,22 +1056,23 @@ namespace GenderPayGap.Database.Migrations
                 {
                     b.Property<long>("UserStatusId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("UserStatusId"));
 
                     b.Property<long>("ByUserId")
                         .HasColumnType("bigint");
 
                     b.Property<byte>("Status")
-                        .HasColumnName("StatusId")
-                        .HasColumnType("smallint");
+                        .HasColumnType("smallint")
+                        .HasColumnName("StatusId");
 
                     b.Property<DateTime>("StatusDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("StatusDetails")
-                        .HasColumnType("character varying(255)")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
@@ -1063,7 +1086,7 @@ namespace GenderPayGap.Database.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserStatus");
+                    b.ToTable("UserStatus", (string)null);
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.InactiveUserOrganisation", b =>
@@ -1079,6 +1102,10 @@ namespace GenderPayGap.Database.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Organisation");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.Models.AuditLog", b =>
@@ -1094,6 +1121,12 @@ namespace GenderPayGap.Database.Migrations
                     b.HasOne("GenderPayGap.Database.User", "OriginalUser")
                         .WithMany()
                         .HasForeignKey("OriginalUserId");
+
+                    b.Navigation("ImpersonatedUser");
+
+                    b.Navigation("Organisation");
+
+                    b.Navigation("OriginalUser");
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.Models.ReminderEmail", b =>
@@ -1103,6 +1136,8 @@ namespace GenderPayGap.Database.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.Organisation", b =>
@@ -1111,6 +1146,8 @@ namespace GenderPayGap.Database.Migrations
                         .WithMany()
                         .HasForeignKey("LatestPublicSectorTypeId")
                         .HasConstraintName("FK_dbo.Organisations_dbo.OrganisationPublicSectorTypes_LatestPublicSectorTypeId");
+
+                    b.Navigation("LatestPublicSectorType");
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.OrganisationAddress", b =>
@@ -1118,9 +1155,11 @@ namespace GenderPayGap.Database.Migrations
                     b.HasOne("GenderPayGap.Database.Organisation", "Organisation")
                         .WithMany("OrganisationAddresses")
                         .HasForeignKey("OrganisationId")
-                        .HasConstraintName("FK_dbo.OrganisationAddresses_dbo.Organisations_OrganisationId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_dbo.OrganisationAddresses_dbo.Organisations_OrganisationId");
+
+                    b.Navigation("Organisation");
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.OrganisationName", b =>
@@ -1128,9 +1167,11 @@ namespace GenderPayGap.Database.Migrations
                     b.HasOne("GenderPayGap.Database.Organisation", "Organisation")
                         .WithMany("OrganisationNames")
                         .HasForeignKey("OrganisationId")
-                        .HasConstraintName("FK_dbo.OrganisationNames_dbo.Organisations_OrganisationId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_dbo.OrganisationNames_dbo.Organisations_OrganisationId");
+
+                    b.Navigation("Organisation");
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.OrganisationPublicSectorType", b =>
@@ -1140,6 +1181,8 @@ namespace GenderPayGap.Database.Migrations
                         .HasForeignKey("PublicSectorTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("PublicSectorType");
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.OrganisationScope", b =>
@@ -1147,9 +1190,11 @@ namespace GenderPayGap.Database.Migrations
                     b.HasOne("GenderPayGap.Database.Organisation", "Organisation")
                         .WithMany("OrganisationScopes")
                         .HasForeignKey("OrganisationId")
-                        .HasConstraintName("FK_dbo.OrganisationScopes_dbo.Organisations_OrganisationId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_dbo.OrganisationScopes_dbo.Organisations_OrganisationId");
+
+                    b.Navigation("Organisation");
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.OrganisationSicCode", b =>
@@ -1157,16 +1202,20 @@ namespace GenderPayGap.Database.Migrations
                     b.HasOne("GenderPayGap.Database.Organisation", "Organisation")
                         .WithMany("OrganisationSicCodes")
                         .HasForeignKey("OrganisationId")
-                        .HasConstraintName("FK_dbo.OrganisationSicCodes_dbo.Organisations_OrganisationId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_dbo.OrganisationSicCodes_dbo.Organisations_OrganisationId");
 
                     b.HasOne("GenderPayGap.Database.SicCode", "SicCode")
                         .WithMany("OrganisationSicCodes")
                         .HasForeignKey("SicCodeId")
-                        .HasConstraintName("FK_dbo.OrganisationSicCodes_dbo.SicCodes_SicCodeId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_dbo.OrganisationSicCodes_dbo.SicCodes_SicCodeId");
+
+                    b.Navigation("Organisation");
+
+                    b.Navigation("SicCode");
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.OrganisationStatus", b =>
@@ -1179,9 +1228,13 @@ namespace GenderPayGap.Database.Migrations
                     b.HasOne("GenderPayGap.Database.Organisation", "Organisation")
                         .WithMany("OrganisationStatuses")
                         .HasForeignKey("OrganisationId")
-                        .HasConstraintName("FK_dbo.OrganisationStatus_dbo.Organisations_OrganisationId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_dbo.OrganisationStatus_dbo.Organisations_OrganisationId");
+
+                    b.Navigation("ByUser");
+
+                    b.Navigation("Organisation");
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.Return", b =>
@@ -1189,9 +1242,11 @@ namespace GenderPayGap.Database.Migrations
                     b.HasOne("GenderPayGap.Database.Organisation", "Organisation")
                         .WithMany("Returns")
                         .HasForeignKey("OrganisationId")
-                        .HasConstraintName("FK_dbo.Returns_dbo.Organisations_OrganisationId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_dbo.Returns_dbo.Organisations_OrganisationId");
+
+                    b.Navigation("Organisation");
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.SicCode", b =>
@@ -1199,8 +1254,10 @@ namespace GenderPayGap.Database.Migrations
                     b.HasOne("GenderPayGap.Database.SicSection", "SicSection")
                         .WithMany("SicCodes")
                         .HasForeignKey("SicSectionId")
-                        .HasConstraintName("FK_dbo.SicCodes_dbo.SicSections_SicSectionId")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_dbo.SicCodes_dbo.SicSections_SicSectionId");
+
+                    b.Navigation("SicSection");
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.UserOrganisation", b =>
@@ -1208,16 +1265,20 @@ namespace GenderPayGap.Database.Migrations
                     b.HasOne("GenderPayGap.Database.Organisation", "Organisation")
                         .WithMany("UserOrganisations")
                         .HasForeignKey("OrganisationId")
-                        .HasConstraintName("FK_dbo.UserOrganisations_dbo.Organisations_OrganisationId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_dbo.UserOrganisations_dbo.Organisations_OrganisationId");
 
                     b.HasOne("GenderPayGap.Database.User", "User")
                         .WithMany("UserOrganisations")
                         .HasForeignKey("UserId")
-                        .HasConstraintName("FK_dbo.UserOrganisations_dbo.Users_UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_dbo.UserOrganisations_dbo.Users_UserId");
+
+                    b.Navigation("Organisation");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.UserStatus", b =>
@@ -1231,9 +1292,49 @@ namespace GenderPayGap.Database.Migrations
                     b.HasOne("GenderPayGap.Database.User", "User")
                         .WithMany("UserStatuses")
                         .HasForeignKey("UserId")
-                        .HasConstraintName("FK_dbo.UserStatus_dbo.Users_UserId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_dbo.UserStatus_dbo.Users_UserId");
+
+                    b.Navigation("ByUser");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GenderPayGap.Database.Organisation", b =>
+                {
+                    b.Navigation("OrganisationAddresses");
+
+                    b.Navigation("OrganisationNames");
+
+                    b.Navigation("OrganisationScopes");
+
+                    b.Navigation("OrganisationSicCodes");
+
+                    b.Navigation("OrganisationStatuses");
+
+                    b.Navigation("Returns");
+
+                    b.Navigation("UserOrganisations");
+                });
+
+            modelBuilder.Entity("GenderPayGap.Database.SicCode", b =>
+                {
+                    b.Navigation("OrganisationSicCodes");
+                });
+
+            modelBuilder.Entity("GenderPayGap.Database.SicSection", b =>
+                {
+                    b.Navigation("SicCodes");
+                });
+
+            modelBuilder.Entity("GenderPayGap.Database.User", b =>
+                {
+                    b.Navigation("ReminderEmails");
+
+                    b.Navigation("UserOrganisations");
+
+                    b.Navigation("UserStatuses");
                 });
 #pragma warning restore 612, 618
         }

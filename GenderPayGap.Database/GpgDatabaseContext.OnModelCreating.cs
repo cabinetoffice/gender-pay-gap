@@ -350,7 +350,8 @@ namespace GenderPayGap.Database
 
                     entity.HasIndex(e => e.ContactPhoneNumber);
 
-                    entity.HasIndex(e => e.EmailAddressDB);
+                    entity.HasIndex(e => e.EmailAddressDB)
+                        .IsUnique();
 
                     entity.HasIndex(e => e.Status);
 
