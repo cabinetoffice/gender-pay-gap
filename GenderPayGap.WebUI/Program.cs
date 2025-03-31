@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Serilog;
+using Sentry.AspNetCore;
 
 namespace GenderPayGap.WebUI
 {
@@ -42,6 +43,7 @@ namespace GenderPayGap.WebUI
             SetThreadCultureToParseUkDates();
             
             WebApplicationBuilder builder = WebApplication.CreateBuilder();
+            builder.WebHost.UseSentry();
             
             ConfigureServices(builder.Services);
             SetupDependencyInjection(builder);
