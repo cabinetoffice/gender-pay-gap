@@ -33,8 +33,6 @@ namespace GenderPayGap.WebUI
 
         public static void Main(string[] args)
         {
-            InitialiseSentry();
-            
             // Add a handler for unhandled exceptions
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             
@@ -43,7 +41,7 @@ namespace GenderPayGap.WebUI
             SetThreadCultureToParseUkDates();
             
             WebApplicationBuilder builder = WebApplication.CreateBuilder();
-            builder.WebHost.UseSentry();
+            InitialiseSentry(builder.WebHost);
             
             ConfigureServices(builder.Services);
             SetupDependencyInjection(builder);
@@ -63,11 +61,11 @@ namespace GenderPayGap.WebUI
             // host.Run();
         }
 
-        private static void InitialiseSentry()
+        private static void InitialiseSentry(ConfigureWebHostBuilder webHostBuilder)
         {
             if (Global.LogToSentry)
             {
-                SentrySdk.Init(options =>
+                webHostBuilder.UseSentry(options =>
                 {
                     options.Dsn = "https://7aa7b734d6b24c549432c396a5c42465@o4504651047501824.ingest.us.sentry.io/4504672991641600";
                     options.Environment = Config.EnvironmentName;
