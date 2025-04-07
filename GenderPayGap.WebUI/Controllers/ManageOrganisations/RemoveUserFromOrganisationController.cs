@@ -101,13 +101,19 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
             registrationRepository.RemoveRegistration(userOrganisationToRemove, actionByUser);
             
             // Email user that has been unregistered
-            emailSendingService.SendRemovedUserFromOrganisationEmail(
-                userToUnregister.EmailAddress,
-                orgToRemove.OrganisationName,
-                userToUnregister.Fullname);
+            if (!userToUnregister.HasBeenAnonymised)
+            {
+                emailSendingService.SendRemovedUserFromOrganisationEmail(
+                    userToUnregister.EmailAddress,
+                    orgToRemove.OrganisationName,
+                    userToUnregister.Fullname);
+            }
 
             // Email the other users of the organisation
-            IEnumerable<string> emailAddressesForOrganisation = orgToRemove.UserOrganisations.Select(uo => uo.User.EmailAddress);
+            IEnumerable<string> emailAddressesForOrganisation = orgToRemove.UserOrganisations
+                .Where(uo => !uo.User.HasBeenAnonymised)
+                .Select(uo => uo.User.EmailAddress);
+            
             foreach (string emailAddress in emailAddressesForOrganisation)
             {
                 emailSendingService.SendRemovedUserFromOrganisationEmail(

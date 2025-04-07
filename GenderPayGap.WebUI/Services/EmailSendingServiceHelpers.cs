@@ -21,6 +21,7 @@ namespace GenderPayGap.WebUI.Services
         public static void SendSuccessfulSubmissionEmailToRegisteredUsers(Return postedReturn, string reportLink, string submittedOrUpdated, EmailSendingService emailSendingService)
         {
             IEnumerable<string> emailAddressesForOrganisation = postedReturn.Organisation.UserOrganisations
+                .Where(uo => !uo.User.HasBeenAnonymised)
                 .Select(uo => uo.User.EmailAddress);
 
             foreach (string emailAddress in emailAddressesForOrganisation)
