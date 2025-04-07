@@ -33,7 +33,9 @@ namespace GenderPayGap.WebUI.Controllers
             comparisonBasketService.AddToBasket(organisationId);
             comparisonBasketService.SaveComparedEmployersToCookie();
 
-            return LocalRedirect(returnUrl);
+            return !string.IsNullOrWhiteSpace(returnUrl)
+                ? LocalRedirect(returnUrl)
+                : RedirectToAction("CompareEmployersNoYear", "CompareEmployers");
         }
         
         [HttpGet("/compare-employers/add-js/{organisationId}")]
@@ -59,7 +61,14 @@ namespace GenderPayGap.WebUI.Controllers
             comparisonBasketService.RemoveFromBasket(organisationId);
             comparisonBasketService.SaveComparedEmployersToCookie();
 
-            return LocalRedirect(returnUrl);
+            if (!string.IsNullOrWhiteSpace(returnUrl))
+            {
+                return LocalRedirect(returnUrl);
+            }
+
+            return comparisonBasketService.ComparedEmployers.Any()
+                ? RedirectToAction("CompareEmployersNoYear", "CompareEmployers")
+                : RedirectToAction("SearchPage", "Search");
         }
         
         [HttpGet("/compare-employers/remove-js/{organisationId}")]
@@ -82,7 +91,14 @@ namespace GenderPayGap.WebUI.Controllers
             comparisonBasketService.ClearBasket();
             comparisonBasketService.SaveComparedEmployersToCookie();
 
-            return LocalRedirect(returnUrl);
+            if (!string.IsNullOrWhiteSpace(returnUrl))
+            {
+                return LocalRedirect(returnUrl);
+            }
+
+            return comparisonBasketService.ComparedEmployers.Any()
+                ? RedirectToAction("CompareEmployersNoYear", "CompareEmployers")
+                : RedirectToAction("SearchPage", "Search");
         }
         
         [HttpGet("/compare-employers")]
