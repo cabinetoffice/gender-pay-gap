@@ -1,5 +1,7 @@
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.ExternalServices.FileRepositories;
 using GenderPayGap.WebUI.Search;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +39,8 @@ namespace GenderPayGap.WebUI.Controllers
 
             if (anOrganisation == null)
             {
-                throw new Exception("Could not load an organisation from the database");
+                CustomLogger.Error("Health Check Failed: Could not load an organisation from the database");
+                throw new HealthCheckFailedException();
             }
         }
 
@@ -64,7 +67,8 @@ namespace GenderPayGap.WebUI.Controllers
             }
             catch (Exception e)
             {
-                throw new Exception($"Could not read or write a file: {e.Message}", e);
+                CustomLogger.Error($"Health Check Failed: Could not read or write a file: {e.Message}");
+                throw new HealthCheckFailedException();
             }
         }
 
@@ -73,7 +77,8 @@ namespace GenderPayGap.WebUI.Controllers
             if (SearchRepository.CachedOrganisations == null ||
                 SearchRepository.CachedUsers == null)
             {
-                throw new Exception("SearchRepository was not loaded");
+                CustomLogger.Error("Health Check Failed: SearchRepository was not loaded");
+                throw new HealthCheckFailedException();
             }
         }
     }

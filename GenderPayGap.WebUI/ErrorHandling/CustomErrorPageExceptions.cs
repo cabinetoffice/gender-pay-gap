@@ -85,4 +85,10 @@ namespace GenderPayGap.WebUI.ErrorHandling
         public override string ViewName => "../Errors/RegistrationNotFound";
         public override int StatusCode => 404;
     }
+    
+    public class HealthCheckFailedException : CustomErrorPageException
+    {
+        public override string ViewName => "../Errors/ThereIsAProblemWithTheService";
+        public override int StatusCode => 500;
+    }
 }
