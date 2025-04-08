@@ -33,7 +33,7 @@ namespace GenderPayGap.WebUI.Controllers
             comparisonBasketService.AddToBasket(organisationId);
             comparisonBasketService.SaveComparedEmployersToCookie();
 
-            return !string.IsNullOrWhiteSpace(returnUrl)
+            return Url.IsLocalUrl(returnUrl)
                 ? LocalRedirect(returnUrl)
                 : RedirectToAction("CompareEmployersNoYear", "CompareEmployers");
         }
@@ -61,7 +61,7 @@ namespace GenderPayGap.WebUI.Controllers
             comparisonBasketService.RemoveFromBasket(organisationId);
             comparisonBasketService.SaveComparedEmployersToCookie();
 
-            if (!string.IsNullOrWhiteSpace(returnUrl))
+            if (Url.IsLocalUrl(returnUrl))
             {
                 return LocalRedirect(returnUrl);
             }
@@ -91,7 +91,7 @@ namespace GenderPayGap.WebUI.Controllers
             comparisonBasketService.ClearBasket();
             comparisonBasketService.SaveComparedEmployersToCookie();
 
-            if (!string.IsNullOrWhiteSpace(returnUrl))
+            if (Url.IsLocalUrl(returnUrl))
             {
                 return LocalRedirect(returnUrl);
             }
