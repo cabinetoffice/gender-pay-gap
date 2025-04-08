@@ -37,7 +37,11 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             DateTime threeYearsAgoMinusSevenDays = threeYearsAgo.AddDays(7);
 
             List<User> usersToSendReminders = dataRepository.GetAll<User>()
-                .Where(u => u.LoginDate >= threeYearsAgoMinusThirtyDays && u.LoginDate < threeYearsAgoMinusThirtyDays.AddDays(1) || u.LoginDate >= threeYearsAgoMinusSevenDays && u.LoginDate < threeYearsAgoMinusSevenDays.AddDays(1) )
+                .Where(u =>
+                    (u.LoginDate >= threeYearsAgoMinusThirtyDays && u.LoginDate < threeYearsAgoMinusThirtyDays.AddDays(1)) ||
+                    (u.LoginDate >= threeYearsAgoMinusSevenDays && u.LoginDate < threeYearsAgoMinusSevenDays.AddDays(1))
+                )
+                .Where(u => !u.HasBeenAnonymised)
                 .ToList();
 
             foreach (User user in usersToSendReminders)

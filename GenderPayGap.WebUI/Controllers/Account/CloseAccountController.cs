@@ -132,7 +132,10 @@ namespace GenderPayGap.WebUI.Controllers.Account
         private void SendAccountClosedEmail(User user)
         {
             // Send email to user informing them of account closure
-            emailSendingService.SendCloseAccountCompletedEmail(user.EmailAddress);
+            if (!user.HasBeenAnonymised)
+            {
+                emailSendingService.SendCloseAccountCompletedEmail(user.EmailAddress);
+            }
         }
 
         private void InformGeoOfOrphanedOrganisations(List<Organisation> orphanedOrganisations)

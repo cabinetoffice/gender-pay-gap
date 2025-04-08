@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+using System.Collections.Concurrent;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using GenderPayGap.Extensions.AspNetCore;
 
@@ -13,7 +14,7 @@ namespace GenderPayGap.WebUI.Helpers
         private const string AppIe8CssRegex = "app-ie8-[^-]*.css";
         private const string AppJsRegex = "app-.*.js";
 
-        private static Dictionary<string, string> cachedFilenames = new Dictionary<string, string>();
+        private static ConcurrentDictionary<string, string> cachedFilenames = new();
 
         public static string GetAppCssFilename() => GetStaticFile(CompiledDirectory, AppCssRegex);
         public static string GetAppIe8CssFilename() => GetStaticFile(CompiledDirectory, AppIe8CssRegex);
@@ -32,10 +33,12 @@ namespace GenderPayGap.WebUI.Helpers
                 // cache the filename so we don't need to search a directory for each request
                 string cacheKey = directory + "/" + fileRegex;
 
-                if (!cachedFilenames.ContainsKey(cacheKey))
+                if (cachedFilenames.TryGetValue(cacheKey, out string filename))
                 {
-                    cachedFilenames[cacheKey] = FindMatchingFile(directory, fileRegex);
+                    return filename;
                 }
+
+                cachedFilenames[cacheKey] = FindMatchingFile(directory, fileRegex);
 
                 return cachedFilenames[cacheKey];
             }

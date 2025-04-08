@@ -263,6 +263,7 @@ namespace GenderPayGap.WebUI.Controllers
                 // Find all email addresses associated with the organisation - only the active ones (who have confirmed their PIN)
                 IEnumerable<string> emailAddressesForOrganisation = organisation.UserOrganisations
                     .Where(uo => uo.PINConfirmedDate.HasValue)
+                    .Where(uo => !uo.User.HasBeenAnonymised)
                     .Select(uo => uo.User.EmailAddress);
                 
                 // Send email of correct type to each email address associated with organisation
